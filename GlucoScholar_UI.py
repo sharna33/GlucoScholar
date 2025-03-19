@@ -15,7 +15,7 @@ class DiabetesPredictorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("GlucoScholar Diabetes Predictor")
-        self.root.geometry("800x800")
+        self.root.geometry("800x650")
         
         # Configure default font and colors
         self.root.configure(bg='#f0f0f0')
@@ -77,7 +77,7 @@ class DiabetesPredictorApp:
         ttk.Button(self.dataset_frame, text="Browse", command=self.load_dataset).grid(row=0, column=2)
         
         # Style for text widget
-        self.results_text = tk.Text(self.dataset_frame, height=8, width=60, 
+        self.results_text = tk.Text(self.dataset_frame, height=9, width=60, 
                                   bg='#ffffff', fg='#2c3e50',
                                   font=('Arial', 11))
         self.results_text.grid(row=1, column=0, columnspan=3, padx=10, pady=5)
@@ -91,6 +91,7 @@ class DiabetesPredictorApp:
         
         # Style buttons
         self.style.configure('TButton', padding=6, relief='flat', background='#3498db', foreground='white')
+
         ttk.Button(self.image_frame, text="Extract Text", command=self.process_image).grid(row=1, column=0, pady=10)
         ttk.Button(self.image_frame, text="Search Online", command=self.search_online).grid(row=1, column=1, pady=10)
         
@@ -174,7 +175,7 @@ class DiabetesPredictorApp:
             ttk.Label(self.predict_frame, text=label, background='#ffffff').grid(row=i, column=0, padx=10, pady=5, sticky='w')
             self.entries[field] = ttk.Entry(self.predict_frame)
             self.entries[field].grid(row=i, column=1, padx=10, pady=5)
-        
+
         # Prediction button styling
         self.style.configure('Accent.TButton', background='#27ae60', foreground='white')
         # Create custom style for the prediction button
@@ -257,7 +258,8 @@ class DiabetesPredictorApp:
                 ax.axis('equal')
                 plt.title('Diabetes Prediction Distribution')
                 
-                # Embed the plot in tkinter
+             # Embed the plot in tkinter
+
                 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
                 if hasattr(self, 'canvas'):
                     self.canvas.get_tk_widget().destroy()
@@ -293,10 +295,48 @@ class DiabetesPredictorApp:
         query = self.image_text.get("1.0", "end-1c").split('\n')[-1]
         if query:
             try:
+                # Show searching status
+                self.image_text.insert(tk.END, "\n\nSearching...\n")
+                self.root.update()
+
+                # Add initial delay
+                time.sleep(2)
+
                 results = self.info_fetcher.google_search(query)
-                self.image_text.insert(tk.END, "\n\nSearch Results:\n" + "\n".join(results[:3]))
+                
+                # Clear searching status
+                self.image_text.delete("end-2c linestart", "end-1c lineend")
+                
+                if results:
+                    self.image_text.insert(tk.END, "\nSearch Results:\n")
+                    for i, url in enumerate(results, 1):
+                        self.image_text.insert(tk.END, f"{i}. ", "normal")
+                        self.image_text.insert(tk.END, url + "\n", f"hyperlink url-{url}")
+                else:
+                    self.image_text.insert(tk.END, "\nUsing alternative medical resources:\n")
+                    default_urls = [
+                        "https://www.diabetes.org/",
+                        "https://www.niddk.nih.gov/health-information/diabetes",
+                        "https://www.who.int/health-topics/diabetes"
+                    ]
+                    for i, url in enumerate(default_urls, 1):
+                        self.image_text.insert(tk.END, f"{i}. ", "normal")
+                        self.image_text.insert(tk.END, url + "\n", f"hyperlink url-{url}")
+
+
             except Exception as e:
-                messagebox.showerror("Error", f"Search failed: {str(e)}")
+                if "429" in str(e):
+                    self.image_text.insert(tk.END, "\nUsing alternative medical resources:\n")
+                    default_urls = [
+                        "https://www.diabetes.org/",
+                        "https://www.niddk.nih.gov/health-information/diabetes",
+                        "https://www.who.int/health-topics/diabetes"
+                    ]
+                    for i, url in enumerate(default_urls, 1):
+                        self.image_text.insert(tk.END, f"{i}. ", "normal")
+                        self.image_text.insert(tk.END, url + "\n", f"hyperlink url-{url}")
+                else:
+                    messagebox.showerror("Error", f"Search failed: {str(e)}")
                 
     def predict_diabetes(self):
         try:
@@ -338,3 +378,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = DiabetesPredictorApp(root)
     root.mainloop()
+
