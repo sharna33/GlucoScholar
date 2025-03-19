@@ -1,0 +1,7 @@
+pandas
+matplotlib
+opencv-python-headless
+pytesseract
+google
+# wikipedia==1.4.0
+scikit-learn
