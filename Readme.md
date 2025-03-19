@@ -69,8 +69,6 @@ There have 3 test images and 1 dataset available for testing:
 `├── GlucoScholar_UI.py`  
 `├── requirements.txt`
 
-.
-
 ## **🤝 Contributors**
 
 Sadia Rahman Sharna - https://github.com/sharna33   
