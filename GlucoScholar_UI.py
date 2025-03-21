@@ -13,6 +13,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.units import inch
+import sqlite3
+from datetime import datetime
 
 
 
@@ -62,6 +64,57 @@ class DiabetesPredictorApp:
         self.create_predict_tab()
         self.create_medical_tab()
         
+        # Database initialization
+        self.conn = sqlite3.connect('diabetes_predictions.db')
+        self.create_prediction_table()
+        
+        # Add this to handle database closure on exit
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+    
+    def create_prediction_table(self):
+        cursor = self.conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS predictions
+                        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        gender TEXT,
+                        age REAL,
+                        hypertension INTEGER,
+                        heart_disease INTEGER,
+                        smoking_history TEXT,
+                        bmi REAL,
+                        HbA1c_level REAL,
+                        blood_glucose_level REAL,
+                        prediction_result TEXT,
+                        timestamp DATETIME)''')
+        self.conn.commit()
+
+
+    def on_close(self):
+        """Handle database connection closure when app exits"""
+        self.conn.close()
+        self.root.destroy()
+        
+    def save_prediction(self, input_data, prediction_result):
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute('''INSERT INTO predictions 
+                            (gender, age, hypertension, heart_disease, smoking_history,
+                            bmi, HbA1c_level, blood_glucose_level, prediction_result, timestamp)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                        (input_data['gender'],
+                            input_data['age'],
+                            input_data['hypertension'],
+                            input_data['heart_disease'],
+                            input_data['smoking_history'],
+                            input_data['bmi'],
+                            input_data['HbA1c_level'],
+                            input_data['blood_glucose_level'],
+                            prediction_result,
+                            datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+            self.conn.commit()
+        except sqlite3.Error as e:
+            messagebox.showerror("Database Error", f"Failed to save prediction: {str(e)}")
+
+        
     def _create_frames(self):
         # Create and style frames
         self.dataset_frame = ttk.Frame(self.notebook, style='Custom.TFrame')
@@ -77,7 +130,6 @@ class DiabetesPredictorApp:
         
         self.medical_frame = ttk.Frame(self.notebook, style='Custom.TFrame')
         self.notebook.add(self.medical_frame, text='Medical Support')
-
 
         
     # ... (keep all existing methods the same until create_dataset_tab)
@@ -110,6 +162,7 @@ class DiabetesPredictorApp:
         
         # Configure scrolled text
         self.image_text = scrolledtext.ScrolledText(self.image_frame, height=30, width=80,
+
 
                                                   wrap=tk.WORD, bg='#ffffff', fg='#2c3e50',
                                                   font=('Arial', 11))
@@ -157,7 +210,6 @@ class DiabetesPredictorApp:
                         self.image_text.insert(tk.END, f"{i}. ", "normal")
                         self.image_text.insert(tk.END, url + "\n", f"hyperlink url-{url}")
                 else:
-
                     self.image_text.insert(tk.END, "\nNo results found or rate limit reached. Please try again later.\n")
                     
             except Exception as e:
@@ -198,6 +250,7 @@ class DiabetesPredictorApp:
                     font=('Arial', 14, 'bold'),
                     padding=10)
 
+
         # Prediction button and result with custom style
         ttk.Button(self.predict_frame, 
                 text="Predict Diabetes", 
@@ -221,7 +274,7 @@ class DiabetesPredictorApp:
                 text="Generate PDF Report", 
                 command=self.generate_pdf_report,
                 style='Accent.TButton').grid(row=10, column=0, columnspan=2, pady=10)
-
+    
 
     def load_dataset(self):
         file_path = filedialog.askopenfilename(
@@ -280,6 +333,7 @@ class DiabetesPredictorApp:
                 fig, ax = plt.subplots(figsize=(5, 4))
                 labels = ['Diabetic', 'Non-Diabetic']
                 sizes = [diabetic, non_diabetic]
+
                 colors = ['#ff9999', '#66b3ff']
                 
                 ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%',
@@ -301,7 +355,6 @@ class DiabetesPredictorApp:
                     self.results_text.insert(tk.END, warning_msg)
                     
             except ValueError as ve:
-
                 messagebox.showerror("Error", str(ve))
             except Exception as e:
                 messagebox.showerror("Error", f"Error processing dataset: {str(e)}")
@@ -400,6 +453,15 @@ class DiabetesPredictorApp:
             result = "Diabetic" if prediction[0] == 1 else "Not Diabetic"
             self.result_label.config(text=f"Prediction Result: {result}", foreground='red' if prediction[0] else 'green')
             
+            prediction = self.radFor.model.predict(df)
+            result = "Diabetic" if prediction[0] == 1 else "Not Diabetic"
+            self.result_label.config(text=f"Prediction Result: {result}", 
+                                foreground='red' if prediction[0] else 'green')
+            
+            # Save to database
+            self.save_prediction(input_data, result)
+            
+            
             # Update medical recommendations
             self.advice_text.delete(1.0, tk.END)
             recommendations = self.get_medical_recommendations(prediction[0], input_data)
@@ -417,8 +479,8 @@ class DiabetesPredictorApp:
                                                 wrap=tk.WORD, 
                                                 bg='#ffffff', fg='#2c3e50',
                                                 font=('Arial', 11))
-        self.advice_text.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
+        self.advice_text.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
         # PDF generation button
         ttk.Button(self.predict_frame, 
