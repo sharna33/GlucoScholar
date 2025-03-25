@@ -1,0 +1,6 @@
+ID,Gender,Age,Hypertension,Heart Disease,Smoking History,BMI,HbA1c Level,Blood Glucose Level,Prediction Result
+17,Male,20,1,0,current,17,6.5,180,Not Diabetic
+18,Male,20,1,0,current,17,6.9,180,Diabetic
+19,Male,20,1,0,current,17,6.9,200,Diabetic
+20,Male,60,1,0,never,30,9,150,Diabetic
+21,Male,95,1,1,No Info,22,7,180,Diabetic

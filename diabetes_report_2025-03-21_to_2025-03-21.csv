@@ -1,0 +1,4 @@
+ID,Gender,Age,Hypertension,Heart Disease,Smoking History,BMI,HbA1c Level,Blood Glucose Level,Prediction Result
+4,Male,70.0,0,1,former,30.0,6.9,170.0,Diabetic,2025-03-21 11:27:37
+5,Female,31.0,0,0,never,26.6,6.3,85.0,Not Diabetic,2025-03-21 11:51:09
+6,Male,53.0,1,1,current,30.5,7.0,197.0,Diabetic,2025-03-21 11:54:55

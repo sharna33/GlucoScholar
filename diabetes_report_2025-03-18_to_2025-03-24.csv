@@ -1,0 +1,32 @@
+ID,Gender,Age,Hypertension,Heart Disease,Smoking History,BMI,HbA1c Level,Blood Glucose Level,Prediction Result
+1,Male,30.0,1,1,never,25.0,6.5,150.0,Not Diabetic
+2,Female,50.0,1,1,ever,23.0,6.8,160.0,Diabetic
+3,Male,50.0,1,1,ever,23.0,6.8,160.0,Diabetic
+4,Male,70.0,0,1,former,30.0,6.9,170.0,Diabetic
+5,Female,31.0,0,0,never,26.6,6.3,85.0,Not Diabetic
+6,Male,53.0,1,1,current,30.5,7.0,197.0,Diabetic
+7,Male,41.0,1,0,not current,25.0,5.5,195.0,Not Diabetic
+8,Male,69.0,1,1,current,30.0,6.0,120.0,Not Diabetic
+9,Male,69.0,1,1,current,30.0,6.0,120.0,Not Diabetic
+10,Male,78.0,1,1,never,31.0,6.0,120.0,Not Diabetic
+11,Male,52.0,1,1,current,31.0,7.5,180.0,Diabetic
+12,Female,25.0,0,0,never,18.6,4.5,100.0,Not Diabetic
+13,Female,35.0,1,0,never,20.0,7.9,200.0,Diabetic
+14,Other,35.0,1,0,not current,20.5,7.0,180.0,Diabetic
+15,Other,35.0,1,0,not current,20.5,7.0,180.0,Diabetic
+16,Male,35.0,1,0,not current,20.5,7.0,135.0,Diabetic
+17,Male,20.0,1,0,current,17.0,6.5,180.0,Not Diabetic
+18,Male,20.0,1,0,current,17.0,6.9,180.0,Diabetic
+19,Male,20.0,1,0,current,17.0,6.9,200.0,Diabetic
+20,Male,60.0,1,0,never,30.0,9.0,150.0,Diabetic
+21,Male,95.0,1,1,No Info,22.0,7.0,180.0,Diabetic
+22,Male,95.0,1,1,former,22.0,7.0,180.0,Diabetic
+23,Male,95.0,1,1,former,22.0,7.0,180.0,Diabetic
+24,Male,95.0,1,1,former,22.0,5.0,120.0,Not Diabetic
+25,Male,65.0,1,1,No Info,26.0,7.8,150.0,Diabetic
+26,Male,45.0,1,0,No Info,25.0,5.2,124.0,Not Diabetic
+27,Male,45.0,1,0,No Info,25.0,6.2,124.0,Not Diabetic
+28,Male,84.0,0,1,No Info,18.0,8.4,180.0,Diabetic
+29,Female,20.0,0,0,No Info,18.0,6.5,150.0,Not Diabetic
+30,Male,25.0,1,1,No Info,30.0,8.4,170.0,Diabetic
+31,Female,48.0,0,0,never,26.0,7.9,180.0,Diabetic
